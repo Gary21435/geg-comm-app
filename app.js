@@ -2,7 +2,7 @@ const express = require('express')
 const mongoose = require('mongoose')
 const ordersRouter = require('./controllers/orders')
 const Order = require('./models/order');
-
+const middleware = require('./utils/middleware')
 const app = express()
 
 mongoose
@@ -35,9 +35,13 @@ app.use(express.json()) // I guess imports the json() function
 
 app.use('/api/orders', ordersRouter);
 
-app.get('/api/hello', (req, res) => {
-    res.send('<h1>Hello World! from the backend.</h1>')
-    console.log('hmm...');
-})
+app.use(middleware.requestLogger)
+app.use(middleware.unknownEndpoint)
+app.use(middleware.errorHandler)
+
+// app.get('/api/hello', (req, res) => {
+//     res.send('<h1>Hello World! from the backend.</h1>')
+//     console.log('hmm...');
+// })
 
 module.exports = app;
