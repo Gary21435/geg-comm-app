@@ -6,7 +6,23 @@ const orderSchema = new mongoose.Schema({
     name: String,
     status: String,
     assembly: Boolean,
-    comments: String
+    comments: String,
+    order_id: Number,
+    status: String,
+    date_created: String,
+    payment_method: String,
+    custom_status: String,
+    first_name: String,
+    last_name: String,
+    street_1: String,
+    street_2: String,
+    city: String,
+    state: String,
+    zip: String,
+    phone: String,
+    email: String,
+    items_total: Number,
+    fo_last: String
 })
 
 // modify the 'toJSON' method of the schema to replace _id property with id, and remove __v

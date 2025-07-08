@@ -20,7 +20,7 @@ const errorHandler = (error, req, res, next) => {
     if (error.name === 'ValidationError') {
         console.log("content too short");
         return response.status(422).send({
-        error: error.message
+            error: error.message
         })
     } 
 
