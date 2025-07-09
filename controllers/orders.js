@@ -1,8 +1,9 @@
 const ordersRouter = require('express').Router() // a router object is an isolated instance of middleware and routes
 const Order = require('../models/order') // Mongoose model for talking to mongodb collection ('orders')
 const logger = require('../utils/logger')
-const { STORE_HASH, X_TOKEN } = require('../utils/config')
+const { STORE_HASH, X_TOKEN, SECRET } = require('../utils/config')
 const axios = require('axios')
+const jwt = require('jsonwebtoken')
 const order = require('../models/order')
 
 // BigCommerce base URL
@@ -11,7 +12,21 @@ const baseURL_v3 = `https://api.bigcommerce.com/stores/${STORE_HASH}/v3`;
 const orders_limit = 3;
 let data_array = [];
 
-ordersRouter.get('/', (req, res, next) => {
+const getToken = (req) => {
+    const token = req.get('authorization');
+    if(token && token.startsWith('Bearer ')) {
+        return token.replace('Bearer ', '');
+    }
+    return null;
+}
+
+ordersRouter.get('/', async (req, res, next) => {
+    const verified = jwt.verify(getToken(req), SECRET);
+    if (!verified.id) {
+        return response.status(401).json({ error: 'token invalid' })
+    }
+    // if all good, get orders from DB and respond with them
+    console.log('TOKEN ALL GOOOD');
     Order.find({}).then(orders => {
         logger.info('Orders from the DB have arrived!');
         res.json(orders);
